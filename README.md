@@ -10,22 +10,34 @@ This is a project for the Full Stack Web Developer Nanodegree from Udacity. This
 
 ### You will need:
 - Python 2.7
+- Python Flask package
+- Python SQLAlchemy package
+- Python httplib2 package
+- Python requests package
+- Vagrant
+- VirtualBox
 - Web Browser
 
 ### Setup
-1. Clone this repository
+1. Install Python 2.7
+2. Install Python Flask, SQLAlchemy, httplib2 and requests packages
+3. Install Vagrant And VirtualBox
+4. Clone this repository inside vagrant folder
+
 
 ### To Run
 
-1. From the command line execute the program `python application.py`.  
+- Launch Vagrant VM by running `vagrant up`, then run the secure shell command `vagrant ssh` and then type `cd /vagrant` to access the shared files.
+
+- From the command line execute the program `python application.py`.  
 _The categories.db database should be created with the following tables:_
 
 > - user table
 > - catalog table
 > - item table
 
-2. Then execute the program `python add_data.py` to add a dummy data on the database.
+- Then execute the program `python add_data.py` to add a dummy data on the database.
 
-3. Finally execute the program `python logs_analysis_project.py` from the command line.
+- Execute the program `python logs_analysis_project.py` from the command line.
 
-4. Open on the browser the following link `http://0.0.0.0:5000/` or `http://localhost:5000/` to enter on the Item Catalog Web.
+- Open on the browser the following link `http://0.0.0.0:5000/` or `http://localhost:5000/` to enter on the Item Catalog Web.
