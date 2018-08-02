@@ -9,7 +9,7 @@ This is a project for the Full Stack Web Developer Nanodegree from Udacity. This
 ## To Run
 
 ### You will need:
-- Python2
+- Python 2.7
 - Web Browser
 
 ### Setup
