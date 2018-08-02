@@ -1,0 +1,39 @@
+{% extends "main.html" %}
+{% block content %}
+<div class="content">
+	<h2 class="inline darkGreyText">{{category.name}}</h2>
+	{% if session['user_id'] == category.user_id %}
+	<a href="{{url_for('editCategory',category_id = category.id)}}"><button>Edit Category</button></a>
+	<a href="{{url_for('deleteCategory',category_id = category.id)}}"><button>Delete Category</button></a>
+	<a href="{{url_for('newItem',category_id = category.id)}}"><button>Add Item</button></a>
+	{% endif %}
+	<hr>
+	{% for i in items %}
+	    <div>
+				<table>
+					<tr>
+							<td rowspan="4" class="itemImage"><img src="/static/product_image.png"></img></td>
+							<td><h4 class="blueText">{{i.name}}</h4></td>
+					</tr>
+					<tr>
+							<td><h6 class="lightGreyText">{{i.description}}</h6></td>
+					</tr>
+					<tr>
+							<td><p class="itemPrice darkGreyText">{{i.price}}</p></td>
+					</tr>
+					{% if 'username' in session %}
+					<tr>
+							<td>
+								{% if session['user_id'] == category.user_id %}
+								<a href="{{url_for('editItem', category_id = category.id, item_id=i.id ) }}"><button>Edit</button></a>
+								<a href="{{url_for('deleteItem', category_id = category.id, item_id=i.id ) }}"><button>Delete</button></a>
+								{% endif %}
+							</td>
+					</tr>
+					{% endif %}
+				</table>
+			<hr>
+	    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "main.html"%}
+{% block content %}
+<div class="content">
+	<h2>Edit Item</h2>
+	<hr>
+	<form action="#" method = "post">
+	  <div>
+	    <label class="formLabel" for="name">Name:</label>
+	    <input type ="text" maxlength="100" name="name" value="{{ item.name }}">
+			</br>
+	    <label class="formLabel" for="description">Description:</label>
+	    <input type ="text" maxlength="100" name="description" value="{{ item.description }}">
+	    </br>
+			<label class="formLabel" for="price">Price:</label>
+	    <input type ="text" maxlength="10" name="price" value="{{ item.price }}">
+	    <button type="submit"id="submit" type="submit">Save</button>
+	    <a href = '{{url_for('showItems', category_id=category.id)}}'>
+	      <button type="button">Cancel</button>
+	    </a>
+	  </div>
+	</form>
+</div>
+{% endblock %}

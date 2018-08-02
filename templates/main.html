@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+      {% include "header.html" %}
+      <div class="main">
+        {% include "menu.html" %}
+        {% block content %}
+        {% endblock %}
+      </div>
+  </body>
+</html>

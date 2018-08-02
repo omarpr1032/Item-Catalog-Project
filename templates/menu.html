@@ -1,0 +1,12 @@
+<div class="menu">
+  <span class="roundBar">
+    <h3 class="whiteText">Categories</h3>
+    {% if 'username' in session %}
+      <a href="{{url_for('newCategory')}}"><button>+</button></a>
+    {% endif %}
+  </span>
+
+  {% for category in categories %}
+  <a class="menuItems blueText" href = "{{url_for('showItems', category_id = category.id)}}"><h5>{{category.name}}</h5></a>
+  {% endfor %}
+</div>
