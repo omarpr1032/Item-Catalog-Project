@@ -30,6 +30,9 @@ from oauth2client.client import FlowExchangeError
 import httplib2
 import requests
 
+#
+from functools import wraps
+
 # instance the flask app
 app = Flask(__name__)
 
@@ -43,30 +46,6 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
-
-# User Helper Functions
-def createUser(login_session):
-    newUser = User(name=login_session['username'],
-                   email=login_session['email'],
-                   picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    return user.id
-
-
-def getUserInfo(user_id):
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
-
-
-def getUserID(email):
-    try:
-        user = session.query(User).filter_by(email=email).one()
-        return user.id
-    except:
-        return None
 
 
 # login page and create anti-forgery state token
@@ -219,6 +198,40 @@ def gdisconnect():
         return response
 
 
+# User Helper Functions
+def createUser(login_session):
+    newUser = User(name=login_session['username'],
+                   email=login_session['email'],
+                   picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
+
+# login required decorator
+def login_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect('/login')
+        return func(*args, **kwargs)
+    return decorated_function
+
+
 # read categories, home
 @app.route('/')
 @app.route('/category')
@@ -230,10 +243,8 @@ def showCategories():
 
 # add category
 @app.route('/category/new', methods=['GET', 'POST'])
+@login_required
 def newCategory():
-    # login check
-    if 'username' not in login_session:
-        return redirect('/login')
     # categories menu
     categories = session.query(Category).order_by(asc(Category.name))
     if request.method == 'POST':
@@ -249,13 +260,12 @@ def newCategory():
 
 # delete category
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteCategory(category_id):
     # categories menu
     categories = session.query(Category).order_by(asc(Category.name))
     categoryToDelete = session.query(Category).filter_by(id=category_id).one()
-    # login check
-    if 'username' not in login_session:
-        return redirect('/login')
+
     # autorization check
     if categoryToDelete.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('You are not authorized"
@@ -273,13 +283,11 @@ def deleteCategory(category_id):
 
 # edit category
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def editCategory(category_id):
     # categories menu
     categories = session.query(Category).order_by(asc(Category.name))
     editedCategory = session.query(Category).filter_by(id=category_id).one()
-    # login check
-    if 'username' not in login_session:
-        return redirect('/login')
     # autorization check
     if editedCategory.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('You are not authorized"
@@ -309,13 +317,11 @@ def showItems(category_id):
 
 # add items
 @app.route('/category/<int:category_id>/items/new/', methods=['GET', 'POST'])
+@login_required
 def newItem(category_id):
     # categories menu
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
-    # login_check
-    if 'username' not in login_session:
-        return redirect('/login')
     # autorization check
     if category.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('You are not authorized"
@@ -339,14 +345,12 @@ def newItem(category_id):
 # delete items
 @app.route('/category/<int:category_id>/items/<int:item_id>/delte',
            methods=['GET', 'POST'])
+@login_required
 def deleteItem(category_id, item_id):
     # categories menu
     categories = session.query(Category).order_by(asc(Category.name))
     category = session.query(Category).filter_by(id=category_id).one()
     itemToDelete = session.query(Item).filter_by(id=item_id).one()
-    # login_check
-    if 'username' not in login_session:
-        return redirect('/login')
     # autorization check
     if category.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('You are not authorized"
@@ -366,14 +370,12 @@ def deleteItem(category_id, item_id):
 # edit items
 @app.route('/category/<int:category_id>/items/<int:item_id>/edit/',
            methods=['GET', 'POST'])
+@login_required
 def editItem(category_id, item_id):
     # categories menu
     categories = session.query(Category).order_by(asc(Category.name))
-    editedItem = session.query(Item).filter_by(id=item_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
-    # login_check
-    if 'username' not in login_session:
-        return redirect('/login')
+    editedItem = session.query(Item).filter_by(id=item_id).one()
     # autorization check
     if category.user_id != login_session['user_id']:
         return "<script>function myFunction() {alert('You are not authorized"
